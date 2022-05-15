@@ -1,0 +1,5 @@
+./check_matrix.csv
+./check_matrix_parallel.csv
+./inverse_matrix.csv
+./inverse_matrix_parallel.csv
+./matrix.csv
