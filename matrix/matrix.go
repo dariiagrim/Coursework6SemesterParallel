@@ -114,28 +114,29 @@ func (m *Matrix) FindFistNonZeroColumnRow(indexColumn int, fromRow int, toRow in
 	return 0, errors.New("zero determinant")
 }
 
-func (m *Matrix) ProcessRow(indexColumn int, indexRow int, a float64) {
+func (m *Matrix) processRow(indexColumn int, indexRow int, a float64) {
 	b := m.extendedMatrix[indexRow][indexColumn]
 	if b == 0 {
 		return
 	}
 	coef := -a / b
 	for j := 0; j < len(m.extendedMatrix[0]); j++ {
-		m.extendedMatrix[indexRow][j] = m.extendedMatrix[indexRow][j]*coef + m.extendedMatrix[indexColumn][j]
+		mul := m.extendedMatrix[indexRow][j] * coef
+		m.extendedMatrix[indexRow][j] = mul + m.extendedMatrix[indexColumn][j]
 	}
 }
 
 func (m *Matrix) SetToZeroColumnUpToDown(indexColumn int) {
 	a := m.extendedMatrix[indexColumn][indexColumn]
 	for i := indexColumn + 1; i < len(m.extendedMatrix); i++ {
-		m.ProcessRow(indexColumn, i, a)
+		m.processRow(indexColumn, i, a)
 	}
 }
 
 func (m *Matrix) SetToZeroColumnDownToUp(indexColumn int) {
 	a := m.extendedMatrix[indexColumn][indexColumn]
 	for i := indexColumn - 1; i >= 0; i-- {
-		m.ProcessRow(indexColumn, i, a)
+		m.processRow(indexColumn, i, a)
 	}
 }
 
@@ -163,7 +164,7 @@ func (m *Matrix) SetToZeroColumnUpToDownParallel(indexColumn int) []chan bool {
 		ch := make(chan bool, 2)
 		chans = append(chans, ch)
 		go func() {
-			m.ProcessRow(indexColumn, iCopy, a)
+			m.processRow(indexColumn, iCopy, a)
 			ch <- true
 		}()
 	}
@@ -178,7 +179,7 @@ func (m *Matrix) SetToZeroColumnDownToUpParallel(indexColumn int) []chan bool {
 		ch := make(chan bool, 2)
 		chans = append(chans, ch)
 		go func() {
-			m.ProcessRow(indexColumn, iCopy, a)
+			m.processRow(indexColumn, iCopy, a)
 			ch <- true
 		}()
 	}

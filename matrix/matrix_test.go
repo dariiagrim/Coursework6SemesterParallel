@@ -2,7 +2,9 @@ package matrix
 
 import (
 	"CourseWorkParallel/file_processor"
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"math"
 	"os"
 	"testing"
 )
@@ -56,22 +58,25 @@ func TestMatrix_FindFistNonZeroColumnRow(t *testing.T) {
 
 func TestMatrix_ProcessRow(t *testing.T) {
 	matrix := generateMatrix()
-	matrix.ProcessRow(0, 1, 2)
+	matrix.processRow(0, 1, 2)
 	processedRow := []float64{0, 1, 2, 0, 1, 2, 0, 0}
 	a := assert.New(t)
 	for i, val := range matrix.GetExtendedMatrix()[1] {
 		a.Equal(processedRow[i], val)
 	}
-	matrix.ProcessRow(0, 2, 2)
+	matrix.processRow(0, 2, 2)
 	processedRow = []float64{0, 1, 0, 1, 1, 0, 1, 0}
 	for i, val := range matrix.GetExtendedMatrix()[2] {
 		a.Equal(processedRow[i], val)
 	}
-	matrix.ProcessRow(0, 3, 2)
+	matrix.processRow(0, 3, 2)
 	coef := -2.0 / 3.0
-	processedRow = []float64{0, coef*2.0 + 3.0, coef*2.0 + 2.0, coef*2.0 + 2.0, 1, 0, 0, coef}
+	processedRow = []float64{coef*3.0 + 2.0, coef*2.0 + 3.0, coef*2.0 + 2.0, coef*2.0 + 2.0, 1, 0, 0, coef}
+	fmt.Println(coef * 3.0)
+	fmt.Println(matrix.GetExtendedMatrix()[3])
+	fmt.Println(processedRow)
 	for i, val := range matrix.GetExtendedMatrix()[3] {
-		a.Equal(processedRow[i], val)
+		a.Less(math.Abs(processedRow[i]-val), 0.00001)
 	}
 }
 
@@ -80,15 +85,15 @@ func TestMatrix_SetToZeroColumnUpToDown(t *testing.T) {
 	matrix.SetToZeroColumnUpToDown(0)
 	a := assert.New(t)
 	for i := 1; i < matrix.initialSize; i++ {
-		a.Equal(0.0, matrix.GetExtendedMatrix()[i][0])
+		a.Less(math.Abs(0.0-matrix.GetExtendedMatrix()[i][0]), 0.00001)
 	}
 	matrix.SetToZeroColumnUpToDown(1)
 	for i := 2; i < matrix.initialSize; i++ {
-		a.Equal(0.0, matrix.GetExtendedMatrix()[i][1])
+		a.Less(math.Abs(0.0-matrix.GetExtendedMatrix()[i][1]), 0.00001)
 	}
 	matrix.SetToZeroColumnUpToDown(2)
 	for i := 3; i < matrix.initialSize; i++ {
-		a.Equal(0.0, matrix.GetExtendedMatrix()[i][2])
+		a.Less(math.Abs(0.0-matrix.GetExtendedMatrix()[i][2]), 0.00001)
 	}
 	matrix.SetToZeroColumnUpToDown(3)
 	for i := 4; i < matrix.initialSize; i++ {
