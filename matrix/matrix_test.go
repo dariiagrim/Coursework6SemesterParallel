@@ -2,7 +2,6 @@ package matrix
 
 import (
 	"CourseWorkParallel/file_processor"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
 	"os"
@@ -72,9 +71,6 @@ func TestMatrix_ProcessRow(t *testing.T) {
 	matrix.processRow(0, 3, 2)
 	coef := -2.0 / 3.0
 	processedRow = []float64{coef*3.0 + 2.0, coef*2.0 + 3.0, coef*2.0 + 2.0, coef*2.0 + 2.0, 1, 0, 0, coef}
-	fmt.Println(coef * 3.0)
-	fmt.Println(matrix.GetExtendedMatrix()[3])
-	fmt.Println(processedRow)
 	for i, val := range matrix.GetExtendedMatrix()[3] {
 		a.Less(math.Abs(processedRow[i]-val), 0.00001)
 	}

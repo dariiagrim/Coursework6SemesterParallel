@@ -55,7 +55,7 @@ func TestCalculateInverseMatrixSequential(t *testing.T) {
 }
 
 func TestTemp(t *testing.T) {
-	res := matrix.GenerateRandomMatrixInStringFormat(50)
+	res := matrix.GenerateRandomMatrixInStringFormat(1000)
 	fileProcessor := file_processor.New()
 	err := fileProcessor.WriteCsv("../matrix.csv", res)
 
@@ -86,6 +86,9 @@ func TestTemp(t *testing.T) {
 	for i, row := range checkMatrix {
 		for j, val := range row {
 			checkMatrix[i][j] = math.Round(val*10000) / 10000
+			if i == j {
+				assert.Equal(t, 1.0, checkMatrix[i][j])
+			}
 		}
 	}
 
@@ -110,6 +113,9 @@ func TestTemp(t *testing.T) {
 	for i, row := range checkMatrixParallel {
 		for j, val := range row {
 			checkMatrixParallel[i][j] = math.Round(val*10000) / 10000
+			if i == j {
+				assert.Equal(t, 1.0, checkMatrix[i][j])
+			}
 		}
 	}
 
@@ -153,6 +159,9 @@ func TestTempParallel(t *testing.T) {
 	for i, row := range checkMatrix {
 		for j, val := range row {
 			checkMatrix[i][j] = math.Round(val*10000) / 10000
+			if i == j {
+				assert.Equal(t, 1.0, checkMatrix[i][j])
+			}
 		}
 	}
 

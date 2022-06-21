@@ -100,6 +100,7 @@ func (c *InverseMatrixCalculator) CalculateInverseMatrixParallel(matrix *pkgMatr
 		ch := make(chan bool, 2)
 		chans = append(chans, ch)
 		go func() {
+			defer close(ch)
 			matrix.MultiplyRowByNumber(iCopy, a)
 			ch <- true
 		}()

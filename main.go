@@ -5,6 +5,7 @@ import (
 	"CourseWorkParallel/inverse_matrix_calculator"
 	"CourseWorkParallel/matrix"
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -77,4 +78,39 @@ func doParallel(m *matrix.Matrix, inverseCalculator inverse_matrix_calculator.In
 	if err := fileProcessor.WriteCsv("./inverse_matrix_parallel.csv", matrix.StringifyMatrix(inverseParallel)); err != nil {
 		panic(err)
 	}
+}
+
+func measureTimeSeq() {
+	fileProcessor := file_processor.New()
+	sizes := []int{10, 20, 50, 100, 1000, 2000}
+	for _, size := range sizes {
+		times := make([]float64, 0)
+		for i := 0; i < 5; i++ {
+			res := matrix.GenerateRandomMatrixInStringFormat(size)
+			if err := fileProcessor.WriteCsv("./matrix.csv", res); err != nil {
+				panic(err)
+			}
+			m, err := matrix.MakeFromFile("./matrix.csv", fileProcessor)
+			if err != nil {
+				panic(err)
+			}
+			inverseCalculator := inverse_matrix_calculator.New()
+			_, err, ms := inverseCalculator.CalculateInverseMatrixSequential(m)
+			if err != nil {
+				panic(err)
+			}
+			times = append(times, float64(ms)/1000)
+		}
+		avg := getAverage(times)
+		fmt.Printf("For size %v, average time in 5 iterations %vms", size, avg)
+		fmt.Println()
+	}
+}
+
+func getAverage(arr []float64) float64 {
+	sum := 0.0
+	for _, el := range arr {
+		sum += el
+	}
+	return math.Round(sum/float64(len(arr))*10000) / 10000
 }

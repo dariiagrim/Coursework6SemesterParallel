@@ -164,6 +164,7 @@ func (m *Matrix) SetToZeroColumnUpToDownParallel(indexColumn int) []chan bool {
 		ch := make(chan bool, 2)
 		chans = append(chans, ch)
 		go func() {
+			defer close(ch)
 			m.processRow(indexColumn, iCopy, a)
 			ch <- true
 		}()
@@ -179,6 +180,7 @@ func (m *Matrix) SetToZeroColumnDownToUpParallel(indexColumn int) []chan bool {
 		ch := make(chan bool, 2)
 		chans = append(chans, ch)
 		go func() {
+			defer close(ch)
 			m.processRow(indexColumn, iCopy, a)
 			ch <- true
 		}()
